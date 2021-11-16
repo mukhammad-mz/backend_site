@@ -1,0 +1,19 @@
+package files
+
+import (
+	"github.com/gin-gonic/gin"
+)
+
+func GetRoutes(r *gin.RouterGroup, hf ...gin.HandlerFunc) {
+	music := r.Group("/music")
+	music.GET("/list", GetListMusic)
+	music.GET("", GetMisicInfo)
+
+	file := r.Group("/file")
+	file.Use(hf...)
+	file.POST("", PostFile)
+	file.GET("", GetUserFile)
+	file.PUT("", PutFile)
+	file.DELETE(":id", DeleteFile)
+	file.GET("/files",GetFile)
+}
