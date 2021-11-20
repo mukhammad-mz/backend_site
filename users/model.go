@@ -8,7 +8,6 @@ import (
 )
 
 func CheckPermission(userID, loc string) bool {
-	fmt.Println(userID,len(userID),len(loc), loc)
 	db := db.GetDB()
 	count := 0
 	db = db.Table("users").Where("id_role = ? and uid = ?", 1, userID).Count(&count)

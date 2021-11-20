@@ -12,12 +12,10 @@ func SiteAuthorization() gin.HandlerFunc {
 		handlerName := c.HandlerName()
 		loc := handlerName[strings.Index(handlerName, "/")+1:]
 		userID := c.GetHeader("ID")
-		
 		if !users.CheckPermission(userID, loc) {
 			redirectToAccessDenied(c)
 			return
 		}
-
 	}
 
 }

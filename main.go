@@ -2,23 +2,25 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"site_backend/db"
+	_ "site_backend/docs"
 	"site_backend/middlewares"
 	"site_backend/routes"
 	"time"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	logr "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 const logFilePath = "logs/logError.log"
+const DOWNLOADS_PATH = "D:/projekts/tests/"
 
 // @title Blueprint Swagger API
 // @version 1.0
@@ -38,23 +40,23 @@ const logFilePath = "logs/logError.log"
 // @name Authorization
 
 func main() {
-	lumberjackLogRotate := &lumberjack.Logger{
-		Filename:   logFilePath,
-		MaxSize:    2,
-		MaxAge:     60,
-		MaxBackups: 500,
-		LocalTime:  true,
-		Compress:   true,
-	}
-	logr.SetOutput(lumberjackLogRotate)
-	//print("Hello")
+
 	if err := db.ConnectDB(); err == nil {
+		lumberjackLogRotate := &lumberjack.Logger{
+			Filename:   logFilePath,
+			MaxSize:    5,   // Max megabytes before log is rotated
+			MaxBackups: 500, // Max number of old log files to keep
+			MaxAge:     60,  // Max number of days to retain log files
+			Compress:   true,
+		}
+		log.SetOutput(lumberjackLogRotate)
 		//gin.SetMode(gin.ReleaseMode)
-		router := gin.Default()
+		router := gin.New()
 		//pprof.Register(router, "/test")
-		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		router.Use(static.Serve("/file", static.LocalFile(DOWNLOADS_PATH, false)))
 		router.Use(middlewares.ReteLimitter)
-		//router.Use(middlewares.Logger())
+		router.Use(middlewares.Logger())
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 		if gin.Mode() == gin.DebugMode {
 			router.Use(cors.New(cors.Config{
@@ -72,6 +74,6 @@ func main() {
 			panic("err")
 		}
 	} else {
-		log.Fatal(err)
+		log.Warnf("%v", err)
 	}
 }

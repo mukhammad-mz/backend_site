@@ -6,8 +6,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//MusicsArrayList ....
-type MusicsArrayList []MusicsStruct
+//MusicsArray ....
+
 
 //MusicsArray Array Type
 type MusicsArray []MusicsType
@@ -25,7 +25,7 @@ func (id *MaxID) maxIDSelect() error {
 	return db.Error
 }
 
-func (arr *MusicsArrayList) selectFile(id int) error {
+func (arr *MusicsArray) selectFile(id int) error {
 	db := db.GetDB()
 	db = db.Table(musicsTable).Where("id < ?", id).Order("id desc").Limit(10).Scan(&arr)
 	if db.Error != nil {
@@ -33,7 +33,7 @@ func (arr *MusicsArrayList) selectFile(id int) error {
 	}
 	return db.Error
 }
-func (arr *MusicsArrayList) selectUserFile(id string) error {
+func (arr *MusicsArray) selectUserFile(id string) error {
 	db := db.GetDB()
 	if id != "" {
 		db = db.Table(musicsTable).Where("id_user = ?", id).Scan(&arr)

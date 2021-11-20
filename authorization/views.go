@@ -7,6 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Description authorize user with login and password
+// @Tags authorization
+// @Param body body UserLogin false "authorization struct"
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /auth/token [post]
 func GetToken(c *gin.Context) {
 	userLogin := &UserLogin{}
 	if err := c.BindJSON(userLogin); err != nil {

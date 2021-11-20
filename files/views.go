@@ -4,13 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"site_backend/helper"
 	"site_backend/response"
 	st "strconv"
+	"strings"
 	s "strings"
 
 	"github.com/gin-gonic/gin"
 )
+
+const DOWNLOADS_PATH = "D:/projekts/tests/"
 
 //MaxID ..... : )
 type MaxID struct {
@@ -18,8 +22,14 @@ type MaxID struct {
 }
 
 //GetInfoNewFiles get new files info in Datebase
+//@Tags Music list
+// @Summary return music list
+// @Produce json
+// @Success 200 {object} response.Response
+// @Router /music/list [get]
+// @Failure 500 {object} response.Response
 func GetListMusic(c *gin.Context) {
-	result := MusicsArrayList{}
+	result := MusicsArray{}
 	id, _ := st.Atoi(c.Param("idFile"))
 	if id == 0 {
 		maxID := MaxID{}
@@ -38,9 +48,27 @@ func GetMisicInfo(c *gin.Context) {
 
 }
 
+func download(ctx *gin.Context) {
+	fileName := ctx.Param("filename")
+	targetPath := filepath.Join(DOWNLOADS_PATH, fileName)
+	fmt.Println(targetPath)
+	//This ckeck is for example, I not sure is it can prevent all possible filename attacks - will be much better if real filename will not come from user side. I not even tryed this code
+	if !strings.HasPrefix(filepath.Clean(targetPath), DOWNLOADS_PATH) {
+		ctx.String(403, "Look like you attacking me")
+		return
+	}
+	//Seems this headers needed for some browsers (for example without this headers Chrome will download files as txt)
+	ctx.Header("Content-Description", "File Transfer")
+	ctx.Header("Content-Transfer-Encoding", "binary")
+	ctx.Header("Content-Disposition", "attachment; filename="+fileName)
+	ctx.Header("Content-Type", "application/octet-stream")
+	ctx.File(targetPath)
+}
+
+///////////////////////
 func GetUserFile(c *gin.Context) {
 	id, _ := c.Get("userID")
-	result := MusicsArrayList{}
+	result := MusicsArray{}
 	if err := result.selectUserFile(id.(string)); err != nil {
 		c.JSON(http.StatusInternalServerError, response.ErrorFrom(http.StatusText(500), "select User File", err))
 		return
@@ -49,7 +77,7 @@ func GetUserFile(c *gin.Context) {
 }
 
 func GetFile(c *gin.Context) {
-	result := MusicsArrayList{}
+	result := MusicsArray{}
 	if err := result.selectUserFile(""); err != nil {
 		c.JSON(http.StatusInternalServerError, response.ErrorFrom(http.StatusText(500), "select File", err))
 		return

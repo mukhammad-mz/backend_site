@@ -2,8 +2,7 @@ package middlewares
 
 import (
 	"bytes"
-	"io"
-	"io/ioutil"
+	"fmt"
 	"math"
 	"os"
 	"time"
@@ -33,11 +32,6 @@ func Logger() gin.HandlerFunc {
 		path := c.Request.URL.Path
 		start := time.Now()
 
-		var buf bytes.Buffer
-		tee := io.TeeReader(c.Request.Body, &buf)
-		body, _ := ioutil.ReadAll(tee)
-		c.Request.Body = ioutil.NopCloser(&buf)
-
 		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 		c.Writer = blw
 		defer c.Request.Body.Close()
@@ -58,31 +52,54 @@ func Logger() gin.HandlerFunc {
 		if ok {
 			userID = uID.(string)
 		}
-		
 		entry := log.Fields{
-			"_hostname":     hostname,
-			"_statusCode":   statusCode,
-			"_latency":      latency, // time to process
-			"_clientIP":     clientIP,
-			"_method":       c.Request.Method,
-			"_path":         path,
-			"_dataLength":   dataLength,
-			"_userAgent":    clientUserAgent,
-			"_userID":       userID,
-			"_requestBody":  string(body),
+			"_hostname":   hostname,
+			"_statusCode": statusCode,
+			"_latency":    latency, // time to process
+			"_clientIP":   clientIP,
+			"_method":     c.Request.Method,
+			"_path":       path,
+			"_dataLength": dataLength,
+			"_userAgent":  clientUserAgent,
+			"_userID":     userID,
+
 			"_responseBody": blw.body.String(),
 		}
-		
-		if len(c.Errors) > 0 {
-			log.WithFields(entry).Errorf("telemetry error: %v", c.Errors)
-		} else {
-			if statusCode > 499 {
-				log.WithFields(entry).Error("telemetry")
-			} else if statusCode > 399 {
-				log.WithFields(entry).Warn("telemetry")
-			} else {
-				log.WithFields(entry).Info("telemetry")
-			}
-		}
+		Logger1(entry)
 	}
+}
+
+func Logger1(logfile interface{}) {
+	namefile := filename()
+	str := fmt.Sprintf("%v", logfile)
+	file, err := os.OpenFile("./logs/"+namefile+".log",
+		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	if err != nil {
+		log.Println(err)
+	}
+	defer file.Close()
+
+	time := timenow()
+	if _, err := file.WriteString(time + " " + str + "\n"); err != nil {
+		log.Println(err)
+		fmt.Println("Log Error: ", err)
+	}
+}
+
+// Filename ...
+func filename() string {
+	var t = time.Now()
+	date := fmt.Sprintf("%d-%02d-%02d",
+		t.Day(), t.Year(), t.Month())
+	return date
+
+}
+
+// TimeNow ...
+func timenow() string {
+	var t = time.Now()
+	timenow := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
+		t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute(), t.Second())
+	return timenow
 }

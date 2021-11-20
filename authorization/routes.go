@@ -7,5 +7,5 @@ import (
 func GetRoutes(r *gin.RouterGroup, hf ...gin.HandlerFunc) {
 	auth := r.Group("/auth")
 	//auth.Use(hf...)
-	auth.GET("/token", GetToken)
+	auth.POST("/token", GetToken)
 }
