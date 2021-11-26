@@ -1,0 +1,4 @@
+time="2021-11-27T00:36:47+05:00" level=error msg="user Update: Error 1146: Table 'sitedb.user' doesn't exist"
+time="2021-11-27T01:09:43+05:00" level=error msg="user Insert: Error 1062: Duplicate entry '41b5a24d-5925-45e5-92d8-9e6ff1' for key 'id'"
+time="2021-11-27T01:56:45+05:00" level=error msg="chenck Login Error 1146: Table 'sitedb.user' doesn't exist"
+time="2021-11-27T01:57:06+05:00" level=error msg="chenck Login <nil>"
