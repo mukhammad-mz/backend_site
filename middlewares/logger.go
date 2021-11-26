@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"site_backend/helper"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -63,13 +62,15 @@ func Logger() gin.HandlerFunc {
 			"_dataLength": dataLength,
 			"_userAgent":  clientUserAgent,
 			"_userID":     userID,
+
+			"_responseBody": blw.body.String(),
 		}
 		Logger1(entry)
 	}
 }
 
 func Logger1(logfile interface{}) {
-	namefile := helper.GetDate()
+	namefile := filename()
 	str := fmt.Sprintf("%v", logfile)
 	file, err := os.OpenFile("./logs/"+namefile+".log",
 		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -79,8 +80,26 @@ func Logger1(logfile interface{}) {
 	}
 	defer file.Close()
 
-	if _, err := file.WriteString(helper.GetDateTime() + " " + str + "\n"); err != nil {
+	time := timenow()
+	if _, err := file.WriteString(time + " " + str + "\n"); err != nil {
 		log.Println(err)
 		fmt.Println("Log Error: ", err)
 	}
+}
+
+// Filename ...
+func filename() string {
+	var t = time.Now()
+	date := fmt.Sprintf("%d-%02d-%02d",
+		t.Day(), t.Year(), t.Month())
+	return date
+
+}
+
+// TimeNow ...
+func timenow() string {
+	var t = time.Now()
+	timenow := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d",
+		t.Day(), t.Month(), t.Year(), t.Hour(), t.Minute(), t.Second())
+	return timenow
 }

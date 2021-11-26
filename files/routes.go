@@ -13,11 +13,11 @@ func GetRoutes(r *gin.RouterGroup, hf ...gin.HandlerFunc) {
 
 	file := r.Group("/file")
 	file.Use(hf...)
-	file.GET("/files", GetFile)
 	file.POST("", PostFile)
 	file.GET("", GetUserFile)
 	file.PUT("", PutFile)
 	file.DELETE(":id", DeleteFile)
+	file.GET("/files", GetFile)
 
 
 }

@@ -16,7 +16,6 @@ func SiteAuthorization() gin.HandlerFunc {
 			redirectToAccessDenied(c)
 			return
 		}
-		c.Set("userUID", userID)
 	}
 
 }
