@@ -1,0 +1,79 @@
+basePath: /api/v1
+definitions:
+  authorization.UserLogin:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  response.Response:
+    properties:
+      body: {}
+      message: {}
+      status:
+        type: integer
+    type: object
+info:
+  contact:
+    email: martin7.heinz@gmail.com
+    name: API Support
+  description: Swagger API for Golang Project Blueprint.
+  license:
+    name: MIT
+    url: https://github.com/MartinHeinz/go-project-blueprint/blob/master/LICENSE
+  termsOfService: http://swagger.io/terms/
+  title: Blueprint Swagger API
+  version: "1.0"
+paths:
+  /auth/token:
+    post:
+      description: authorize user with login and password
+      parameters:
+      - description: authorization struct
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/authorization.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      tags:
+      - authorization
+  /music/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: return music list
+      tags:
+      - Music list
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
