@@ -51,12 +51,12 @@ func main() {
 		}
 		log.SetOutput(lumberjackLogRotate)
 		//gin.SetMode(gin.ReleaseMode)
-		router := gin.Default()
+		router := gin.New()
 		//pprof.Register(router, "/test")
+		router.Use(static.Serve("/file", static.LocalFile(DOWNLOADS_PATH, false)))
 		router.Use(middlewares.ReteLimitter)
 		router.Use(middlewares.Logger())
 		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-		router.Use(static.Serve("/file", static.LocalFile(DOWNLOADS_PATH, false)))
 
 		if gin.Mode() == gin.DebugMode {
 			router.Use(cors.New(cors.Config{

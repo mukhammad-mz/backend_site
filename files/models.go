@@ -80,6 +80,14 @@ func checkFile(name string) bool {
 	return true
 }
 
+func (dir *direcr) selectDir(id int) error {
+	db := db.GetDB()
+	db = db.Table("directs").Where("id = ?", id).Scan(&dir)
+	if db.Error != nil {
+		log.Error("select directs", db.Error)
+	}
+	return db.Error
+}
 
 func (url *URLType) creatURL(id int) error {
 	db := db.GetDB()

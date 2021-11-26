@@ -13,6 +13,17 @@ type MusicsType struct {
 	IDUser     string `json:"id_user"`
 }
 
+//MusicsStruct ....
+type MusicsStruct struct {
+	ID         int    `json:"id"`
+	Atist      string `json:"atist"`
+	Name       string `json:"name"`
+	Duration   string `json:"duration"`
+	Size       string `json:"size"`
+	IDDirect   string `json:"id_direct"`
+	Downloaded int    `json:"downloaded"`
+	IDUser     string `json:"id_user"`
+}
 
 //URLType struct
 type URLType struct {

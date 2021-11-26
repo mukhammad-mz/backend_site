@@ -85,6 +85,10 @@ func GetFile(c *gin.Context) {
 	c.JSON(http.StatusOK, response.CorrectWithData(result))
 }
 
+type direcr struct {
+	Direct string `json:"direct"`
+}
+
 //PostFile Upload File function
 func PostFile(c *gin.Context) {
 	addFile := MusicsType{}
@@ -112,7 +116,13 @@ func PostFile(c *gin.Context) {
 		return
 	}
 
-	if err := c.SaveUploadedFile(file, DOWNLOADS_PATH+addFile.NameOrig); err != nil {
+	dir := direcr{}
+	id, _ := st.Atoi(addFile.IDDirect)
+	if err = dir.selectDir(id); err != nil {
+		c.JSON(http.StatusInternalServerError, response.ErrorFromString(http.StatusText(500)))
+	}
+
+	if err := c.SaveUploadedFile(file, dir.Direct+"/"+addFile.NameOrig); err != nil {
 		c.JSON(http.StatusInternalServerError, response.ErrorFrom(http.StatusText(500), "Save Uploaded File", err))
 		return
 	}
