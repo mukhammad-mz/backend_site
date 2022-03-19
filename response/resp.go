@@ -1,6 +1,8 @@
 package response
 
 import (
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	log "github.com/sirupsen/logrus"
 )
@@ -33,6 +35,11 @@ func Forbidden() *Response {
 	return &Response{Status: -1, Message: "forbidden", Body: "insufficient privelegies"}
 }
 
+// MenyRequest response
+func TooMenyRequest() *Response {
+	return &Response{Status: -1, Message: "Meny Request", Body: "Too many requests"}
+}
+
 // CorrectWithData prepares and returns data to user
 func CorrectWithData(data interface{}) *Response {
 	return &Response{Status: 0, Message: "success", Body: data}
@@ -41,6 +48,11 @@ func CorrectWithData(data interface{}) *Response {
 // Correct prepares and returns data to user
 func Correct() *Response {
 	return &Response{Status: 0, Message: "success"}
+}
+
+//ServerError ....
+func ServerError() *Response {
+	return &Response{Status: -1, Message: http.StatusText(500)}
 }
 
 // Created prepares and returns data to user

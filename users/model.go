@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 )
-
+//
 func CheckPermission(userID, handlerName string) bool {
 	db := db.GetDB()
 	count := 0
@@ -28,7 +28,7 @@ func CheckPermission(userID, handlerName string) bool {
 	}
 	return count > 0
 }
-
+//
 func (user *userInfo) userInfo(userUID string) bool {
 	db := db.GetDB()
 	err := db.Table("users").Where("uid=?", userUID).Scan(&user)
@@ -38,7 +38,7 @@ func (user *userInfo) userInfo(userUID string) bool {
 	}
 	return true
 }
-
+//
 func (users *usersInfo) usersInfo(uid string) bool {
 	db := db.GetDB()
 	err := db.Table("users").Where("uid != ?", uid).Scan(&users)
@@ -48,6 +48,7 @@ func (users *usersInfo) usersInfo(uid string) bool {
 	}
 	return true
 }
+//
 func (user *Users) userInsert() bool {
 	db := db.GetDB()
 	err := db.Table("users").Save(&user)
@@ -57,7 +58,7 @@ func (user *Users) userInsert() bool {
 	}
 	return true
 }
-
+//
 func userDel(uid string) bool {
 	db := db.GetDB()
 	err := db.Exec("DELETE FROM users WHERE uid = ?", uid).Error
@@ -67,7 +68,7 @@ func userDel(uid string) bool {
 	}
 	return true
 }
-
+//
 func (user *Users) userUpdate(uid string) bool {
 	db := db.GetDB()
 	err := db.Table("users").Where("uid = ?", uid).Update(user)
@@ -77,7 +78,7 @@ func (user *Users) userUpdate(uid string) bool {
 	}
 	return true
 }
-
+//
 func (user *Users) userinfo(uid string) bool {
 	db := db.GetDB()
 	err := db.Table("users").Where("uid=?", uid).Scan(user)
@@ -87,6 +88,7 @@ func (user *Users) userinfo(uid string) bool {
 	}
 	return true
 }
+//
 func changePassword(uid, pass string) bool {
 	db := db.GetDB()
 	err := db.Table("users").Where("uid=?", uid).Update(map[string]string{"password": pass}).Error
@@ -96,7 +98,7 @@ func changePassword(uid, pass string) bool {
 	}
 	return true
 }
-
+//
 func (login *login) chenckLogin() (bool, int) {
 	db := db.GetDB()
 	count := 0
@@ -106,4 +108,14 @@ func (login *login) chenckLogin() (bool, int) {
 		return false, 0
 	}
 	return true, count
+}
+//
+func (perm *permissions) perms(role int) bool {
+	db := db.GetDB()
+	err := db.Table("accses").Where("role_id = ?", role).Scan(perm)
+	if err.Error != nil {
+		log.Error("chenck Login ", err.Error)
+		return false
+	}
+	return true
 }

@@ -6,65 +6,68 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//MusicsArray ....
-
-
-//MusicsArray Array Type
-type MusicsArray []MusicsType
-
 //musicsTable ....
 var musicsTable = "musics"
 
-func (id *MaxID) maxIDSelect() error {
+func (id *musicID) musicID() bool {
 	db := db.GetDB()
 	//db = db.Raw("SELECT  m.`id` FROM `musics` m ORDER BY m.`id` DESC LIMIT 1").Scan(&id)
 	db = db.Table(musicsTable).Select("id").Last(&id)
 	if db.Error != nil {
 		log.Error("maxIDSelect", db.Error)
+		return false
 	}
-	return db.Error
+	return true
 }
 
-func (arr *MusicsArray) selectFile(id int) error {
+func (arr *MusicsArray) selectFile(id int) bool {
 	db := db.GetDB()
 	db = db.Table(musicsTable).Where("id < ?", id).Order("id desc").Limit(10).Scan(&arr)
 	if db.Error != nil {
 		log.Error("selectNewFile", db.Error)
+		return false
 	}
-	return db.Error
+	return true
 }
-func (arr *MusicsArray) selectUserFile(id string) error {
+
+func (arr *MusicsArray) userFiles(id string) bool {
 	db := db.GetDB()
-	if id != "" {
-		db = db.Table(musicsTable).Where("id_user = ?", id).Scan(&arr)
-		if db.Error != nil {
-			log.Error("selectNewFile: ", db.Error)
-		}
-		return db.Error
-	}
 	db = db.Table(musicsTable).Where("id_user = ?", id).Scan(&arr)
 	if db.Error != nil {
 		log.Error("selectNewFile: ", db.Error)
+		return false
 	}
-	return db.Error
+	return true
 }
 
-func (downType *MusicsType) insertMusic() error {
+func (file *Musics) File(id int) bool {
 	db := db.GetDB()
-	db = db.Table(musicsTable).Save(&downType)
+	db = db.Table(musicsTable).Where("id = ?", id).Scan(&file)
+	if db.Error != nil {
+		log.Error("selectNewFile: ", db.Error)
+		return false
+	}
+	return true
+}
+
+func (uploadDate *Musics) insertMusic() bool {
+	db := db.GetDB()
+	db = db.Table(musicsTable).Save(&uploadDate)
 	if db.Error != nil {
 		log.Error("insertMusic DB", db.Error)
+		return false
 	}
-	return db.Error
+	return true
 }
 
-func deletFile(id int) error {
+func deletFile(id int) bool {
 	db := db.GetDB()
 	db = db.Table(musicsTable).Where("id =? ", id).Delete(id)
 	if db.Error != nil {
 		log.Error("deletFile DB", db.Error)
+		return false
 	}
-	return db.Error
+	return true
 }
 
 func checkFile(name string) bool {
@@ -80,14 +83,12 @@ func checkFile(name string) bool {
 	return true
 }
 
-
-func (url *URLType) creatURL(id int) error {
+func (direct *direct) direct() bool{
 	db := db.GetDB()
-	db = db.Raw(`SELECT d.direct, m.name_orig FROM musics m , directs d 
-				WHERE m.id_direct = d.id 
-				AND m.id = ?`, id).Scan(&url)
-	if db.Error != nil {
-		log.Error("creatURL", db.Error)
-	}
-	return db.Error
+	err := db.Table("direct").Scan(&direct)
+	if err.Error != nil {
+		log.Error("direct", err.Error)
+		return false
+	} 
+	return true
 }

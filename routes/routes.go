@@ -15,7 +15,6 @@ func GetRoutes(r *gin.Engine) {
 
 	// =========== Free to get token ==========
 	authorization.GetRoutes(v1)
-	// =========== Free to get token ==========
 
 	hf := []gin.HandlerFunc{middlewares.SiteAuthentication(), middlewares.SiteAuthorization()}
 
