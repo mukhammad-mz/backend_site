@@ -17,7 +17,7 @@ func CheckPermission(userID, handlerName string) bool {
 		return true
 	}
 
-	errdb = db.Table("users").Select("users.uid,handlers.name,role.id").
+	errdb = db.Table("users").
 		Joins("JOIN accses ON accses.role_id = users.id_role and users.uid=?", userID).
 		Joins("JOIN handlers ON handlers.id = accses.id_handler and handlers.name=?", handlerName).
 		Joins("join role on role.id=users.id_role").Count(&count)

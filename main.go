@@ -14,8 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -39,10 +38,11 @@ func main() {
 	if err := db.ConnectDB(); err == nil {
 		//gin.SetMode(gin.ReleaseMode)
 		router := gin.Default()
+
 		//pprof.Register(router, "/test")
-		router.Use(middlewares.ReteLimitter,middlewares.Logger())
+		router.Use(middlewares.ReteLimitter, middlewares.Logger())
 		router.Use(static.Serve("/file", static.LocalFile(DOWNLOADS_PATH, false)))
-		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		
 
 		if gin.Mode() == gin.DebugMode {
 			router.Use(cors.New(cors.Config{
@@ -63,4 +63,3 @@ func main() {
 		log.Warnf("%v", err)
 	}
 }
-

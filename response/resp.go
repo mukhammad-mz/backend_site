@@ -35,6 +35,14 @@ func Forbidden() *Response {
 	return &Response{Status: -1, Message: "forbidden", Body: "insufficient privelegies"}
 }
 
+//// NotFound response
+func NotFound() *Response {
+	return &Response{Status: -1,
+		Message: http.StatusText(http.StatusNotFound),
+		Body:    "Not Found Route 4 0 4 ",
+	}
+}
+
 // MenyRequest response
 func TooMenyRequest() *Response {
 	return &Response{Status: -1, Message: "Meny Request", Body: "Too many requests"}

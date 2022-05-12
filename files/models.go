@@ -13,6 +13,7 @@ func (id *musicID) musicID() bool {
 	db := db.GetDB()
 	//db = db.Raw("SELECT  m.`id` FROM `musics` m ORDER BY m.`id` DESC LIMIT 1").Scan(&id)
 	db = db.Table(musicsTable).Select("id").Last(&id)
+	
 	if db.Error != nil {
 		log.Error("maxIDSelect", db.Error)
 		return false
