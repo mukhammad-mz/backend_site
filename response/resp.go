@@ -84,6 +84,5 @@ func ListOfErrors(e error) []map[string]string {
 	default:
 		InvalidFields = append(InvalidFields, map[string]string{"error": e.Error()})
 	}
-
 	return InvalidFields
 }

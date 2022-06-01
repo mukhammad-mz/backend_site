@@ -30,11 +30,12 @@ func GetListMusic(c *gin.Context) {
 		id = maxID.ID
 		id++
 	}
+	
 	if err := result.selectFile(id); !err {
 		c.JSON(http.StatusInternalServerError, response.ServerError())
 		return
 	}
-	c.JSON(http.StatusOK, response.CorrectWithData(result))
+	c.JSON(http.StatusOK, response.CorrectWithData(map[string]MusicsArray{"lists": result}))
 }
 
 func GetMisicInfo(c *gin.Context) {
