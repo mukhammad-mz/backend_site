@@ -10,6 +10,25 @@ definitions:
     - login
     - password
     type: object
+  files.Musics:
+    properties:
+      atist:
+        type: string
+      date_upload:
+        type: string
+      duration:
+        type: string
+      id:
+        type: integer
+      id_user:
+        type: string
+      name:
+        type: string
+      name_orig:
+        type: string
+      size:
+        type: string
+    type: object
   response.Response:
     properties:
       body: {}
@@ -17,17 +36,33 @@ definitions:
       status:
         type: integer
     type: object
+  users.login:
+    properties:
+      login:
+        type: string
+    type: object
+  users.password:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    type: object
+  users.userInfo:
+    properties:
+      create_at:
+        type: string
+      data_regist:
+        type: string
+      frist_name:
+        type: string
+      last_name:
+        type: string
+      login:
+        type: string
+    type: object
 info:
-  contact:
-    email: martin7.heinz@gmail.com
-    name: API Support
-  description: Swagger API for Golang Project Blueprint.
-  license:
-    name: MIT
-    url: https://github.com/MartinHeinz/go-project-blueprint/blob/master/LICENSE
-  termsOfService: http://swagger.io/terms/
-  title: Blueprint Swagger API
-  version: "1.0"
+  contact: {}
 paths:
   /auth/token:
     post:
@@ -55,6 +90,66 @@ paths:
             $ref: '#/definitions/response.Response'
       tags:
       - authorization
+  /file:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - files
+    post:
+      parameters:
+      - description: file struct
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/files.Musics'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - files
+  /file/{idFile}:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - files
   /music/list:
     get:
       produces:
@@ -70,9 +165,166 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: return music list
       tags:
-      - Music list
+      - Music
+  /user:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
+    post:
+      parameters:
+      - description: user struct
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/users.userInfo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
+    put:
+      parameters:
+      - description: user struct
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/users.userInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
+  /user/{uid}:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
+  /user/login:
+    get:
+      parameters:
+      - description: login struct
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/users.login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
+  /user/password:
+    put:
+      parameters:
+      - description: user struct
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/users.password'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
+  /user/users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKey: []
+      tags:
+      - user
 securityDefinitions:
-  ApiKeyAuth:
+  ApiKey:
     in: header
     name: Authorization
     type: apiKey

@@ -1,6 +1,8 @@
 package response
 
 import (
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	log "github.com/sirupsen/logrus"
 )
@@ -33,6 +35,19 @@ func Forbidden() *Response {
 	return &Response{Status: -1, Message: "forbidden", Body: "insufficient privelegies"}
 }
 
+//// NotFound response
+func NotFound() *Response {
+	return &Response{Status: -1,
+		Message: http.StatusText(http.StatusNotFound),
+		Body:    "Not Found Route 4 0 4 ",
+	}
+}
+
+// MenyRequest response
+func TooMenyRequest() *Response {
+	return &Response{Status: -1, Message: "Meny Request", Body: "Too many requests"}
+}
+
 // CorrectWithData prepares and returns data to user
 func CorrectWithData(data interface{}) *Response {
 	return &Response{Status: 0, Message: "success", Body: data}
@@ -41,6 +56,11 @@ func CorrectWithData(data interface{}) *Response {
 // Correct prepares and returns data to user
 func Correct() *Response {
 	return &Response{Status: 0, Message: "success"}
+}
+
+//ServerError ....
+func ServerError() *Response {
+	return &Response{Status: -1, Message: http.StatusText(500)}
 }
 
 // Created prepares and returns data to user
@@ -64,6 +84,5 @@ func ListOfErrors(e error) []map[string]string {
 	default:
 		InvalidFields = append(InvalidFields, map[string]string{"error": e.Error()})
 	}
-
 	return InvalidFields
 }

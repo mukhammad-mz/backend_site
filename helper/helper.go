@@ -11,7 +11,7 @@ import (
 )
 
 func GenerateToken() string {
-	b := make([]byte, 32)
+	b := make([]byte, 50)
 	if _, err := rand.Read(b); err != nil {
 		return ""
 	}

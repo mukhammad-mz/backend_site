@@ -8,13 +8,14 @@ import (
 
 func SiteAuthentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		defer authorization.Recoverd(c, "SiteAuthentication: ")
+
 		token := c.GetHeader("Authorization")
-		userID := c.GetHeader("ID")
-		t := authorization.ChekToken(token)
-		if !t || token == "" {
+		t, err := authorization.ChekToken(token)
+		if err != nil {
 			redirectToAccessDenied(c)
 			return
 		}
-		c.Set("userID", userID)
+		c.Set("userUID", t)
 	}
 }

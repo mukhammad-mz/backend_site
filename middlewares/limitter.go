@@ -1,23 +1,19 @@
 package middlewares
 
 import (
-	"net/http"
 	"sync"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
 
-var limiter = newIPRateLimiter(1, 2)
+var limiter = newIPRateLimiter(5, 4)
 
 func ReteLimitter(c *gin.Context) {
 	lim := limiter.getLimiter(c.Request.RemoteAddr)
 	if t := lim.Allow(); !t {
-		m := make(map[string]string)
-		m["code"] = "429"
-		m["message"] = "Too many requests"
 		c.Status(429)
-		c.AbortWithStatusJSON(http.StatusTooManyRequests, m)
+		tooManyRequests(c)
 	}
 	c.Next()
 }

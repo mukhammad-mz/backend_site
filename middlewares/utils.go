@@ -10,3 +10,7 @@ import (
 func redirectToAccessDenied(c *gin.Context) {
 	c.AbortWithStatusJSON(http.StatusForbidden, response.Forbidden())
 }
+
+func tooManyRequests(c *gin.Context) {
+	c.AbortWithStatusJSON(http.StatusTooManyRequests, response.TooMenyRequest())
+}

@@ -16,6 +16,7 @@ import (
 // @Failure 500 {object} response.Response
 // @Router /auth/token [post]
 func GetToken(c *gin.Context) {
+	defer Recoverd(c, "GetToken: ")
 	userLogin := &UserLogin{}
 	if err := c.BindJSON(userLogin); err != nil {
 		c.JSON(http.StatusBadRequest, response.ErrorFromError(err))

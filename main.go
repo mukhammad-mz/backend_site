@@ -14,49 +14,35 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+
+
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 const logFilePath = "logs/logError.log"
 const DOWNLOADS_PATH = "D:/projekts/tests/"
 
-// @title Blueprint Swagger API
-// @version 1.0
-// @description Swagger API for Golang Project Blueprint.
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.email martin7.heinz@gmail.com
-
-// @license.name MIT
-// @license.url https://github.com/MartinHeinz/go-project-blueprint/blob/master/LICENSE
-
 // @BasePath /api/v1
-
-// @securityDefinitions.apikey ApiKeyAuth
+// @securityDefinitions.apikey ApiKey
 // @in header
 // @name Authorization
-
 func main() {
-
+	lumberjackLogRotate := &lumberjack.Logger{
+		Filename:   logFilePath,
+		MaxSize:    5,   // Max megabytes before log is rotated
+		MaxBackups: 500, // Max number of old log files to keep
+		MaxAge:     60,  // Max number of days to retain log files
+		Compress:   true,
+	}
+	log.SetOutput(lumberjackLogRotate)
 	if err := db.ConnectDB(); err == nil {
-		lumberjackLogRotate := &lumberjack.Logger{
-			Filename:   logFilePath,
-			MaxSize:    5,   // Max megabytes before log is rotated
-			MaxBackups: 500, // Max number of old log files to keep
-			MaxAge:     60,  // Max number of days to retain log files
-			Compress:   true,
-		}
-		log.SetOutput(lumberjackLogRotate)
 		//gin.SetMode(gin.ReleaseMode)
 		router := gin.Default()
+
 		//pprof.Register(router, "/test")
-		router.Use(middlewares.ReteLimitter)
-		router.Use(middlewares.Logger())
-		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		router.Use(middlewares.ReteLimitter, middlewares.Logger())
 		router.Use(static.Serve("/file", static.LocalFile(DOWNLOADS_PATH, false)))
+		
 
 		if gin.Mode() == gin.DebugMode {
 			router.Use(cors.New(cors.Config{

@@ -13,6 +13,7 @@ type Users struct {
 	CreateAt   string `json:"create_at"`
 	UpdateAt   string `json:"update_at"`
 }
+
 type userInfo struct {
 	LastName   string `json:"last_name"`
 	FristName  string `json:"frist_name"`
@@ -27,6 +28,15 @@ type password struct {
 	NewPassword string `json:"new_password"`
 	OldPassword string `json:"old_password"`
 }
+
 type login struct {
 	Login string `json:"login"`
 }
+
+type Permission struct {
+	ID        int `json:"id"`
+	RoleID    int `json:"role_id"`
+	IDHandler int `json:"id_handler"`
+}
+
+type permissions []Permission
