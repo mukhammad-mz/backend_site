@@ -2,9 +2,11 @@ package users
 
 import (
 	"site_backend/db"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
+
 //
 func CheckPermission(userID, handlerName string) bool {
 	db := db.GetDB()
@@ -28,6 +30,7 @@ func CheckPermission(userID, handlerName string) bool {
 	}
 	return count > 0
 }
+
 //
 func (user *userInfo) userInfo(userUID string) bool {
 	db := db.GetDB()
@@ -38,16 +41,18 @@ func (user *userInfo) userInfo(userUID string) bool {
 	}
 	return true
 }
+
 //
 func (users *usersInfo) usersInfo(uid string) bool {
 	db := db.GetDB()
-	err := db.Table("users").Where("uid != ?", uid).Scan(&users)
+	err := db.Table("users").Where("uid != ? and is_delete = ?", uid, 1).Scan(&users)
 	if err.Error != nil {
 		log.Error("usersInfo: ", err.Error)
 		return false
 	}
 	return true
 }
+
 //
 func (user *Users) userInsert() bool {
 	db := db.GetDB()
@@ -58,16 +63,19 @@ func (user *Users) userInsert() bool {
 	}
 	return true
 }
+
 //
 func userDel(uid string) bool {
 	db := db.GetDB()
-	err := db.Exec("DELETE FROM users WHERE uid = ?", uid).Error
-	if err != nil {
-		log.Error("user Delet: ", err.Error)
+	db = db.Table("users").Where("uid = ?", uid).
+		Updates(map[string]interface{}{"update_at": time.Now(), "is_delete": 0})
+	if db.Error != nil {
+		log.Error("user Delet: ", db.Error, " User Id", uid)
 		return false
 	}
 	return true
 }
+
 //
 func (user *Users) userUpdate(uid string) bool {
 	db := db.GetDB()
@@ -78,6 +86,7 @@ func (user *Users) userUpdate(uid string) bool {
 	}
 	return true
 }
+
 //
 func (user *Users) userinfo(uid string) bool {
 	db := db.GetDB()
@@ -88,6 +97,7 @@ func (user *Users) userinfo(uid string) bool {
 	}
 	return true
 }
+
 //
 func changePassword(uid, pass string) bool {
 	db := db.GetDB()
@@ -98,6 +108,7 @@ func changePassword(uid, pass string) bool {
 	}
 	return true
 }
+
 //
 func (login *login) chenckLogin() (bool, int) {
 	db := db.GetDB()
@@ -109,6 +120,7 @@ func (login *login) chenckLogin() (bool, int) {
 	}
 	return true, count
 }
+
 //
 func (perm *permissions) perms(role int) bool {
 	db := db.GetDB()

@@ -118,7 +118,7 @@
                 }
             }
         },
-        "/file/{idFile}": {
+        "/file/{id}": {
             "delete": {
                 "security": [
                     {
@@ -130,6 +130,15 @@
                 ],
                 "tags": [
                     "files"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Musics Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -418,6 +427,15 @@
                 ],
                 "tags": [
                     "user"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User Uid",
+                        "name": "uid",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {
