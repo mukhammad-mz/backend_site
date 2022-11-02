@@ -11,7 +11,7 @@ var mysqlDB *gorm.DB
 //ConnectDB connection in DB
 func ConnectDB() error {
 	var err error
-	mysqlDB, err = gorm.Open("mysql", "root:26060510@/sitedb?charset=utf8&parseTime=True&loc=Local")
+	mysqlDB, err = gorm.Open("mysql", "root:1122@/sitedb?charset=utf8&parseTime=True&loc=Local")
 	return err
 }
 
