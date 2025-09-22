@@ -73,7 +73,7 @@ func deletFile(id int) bool {
 
 func checkFile(name string) bool {
 	db := db.GetDB()
-	count := 0
+	var count int64 = 0
 	err := db.Table(musicsTable).Select("name_orig").Where("name_orig = ?", name).Count(&count)
 	if err.Error != nil {
 		log.Error("Сheck File", err.Error)

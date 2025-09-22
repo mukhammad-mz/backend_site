@@ -1,21 +1,38 @@
 package db
 
 import (
-	"github.com/jinzhu/gorm"
-	//
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var mysqlDB *gorm.DB
+var db *gorm.DB
 
-//ConnectDB connection in DB
+// ConnectDB connects to MySQL using GORM v2
 func ConnectDB() error {
 	var err error
-	mysqlDB, err = gorm.Open("mysql", "root:1122@/sitedb?charset=utf8&parseTime=True&loc=Local")
-	return err
+	dsn := "root:0000@/sitedb?charset=utf8mb4&parseTime=true&loc=Local"
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	// Ping to verify connection
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+	if err = sqlDB.Ping(); err != nil {
+		return err
+	}
+
+	// Optional: Connection pool settings
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+
+	return nil
 }
 
-// GetDB get DB connection
+// GetDB returns the global DB connection
 func GetDB() *gorm.DB {
-	return mysqlDB
+	return db
 }
