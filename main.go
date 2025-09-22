@@ -15,7 +15,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
 
-
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
@@ -42,7 +41,6 @@ func main() {
 		//pprof.Register(router, "/test")
 		router.Use(middlewares.ReteLimitter, middlewares.Logger())
 		router.Use(static.Serve("/file", static.LocalFile(DOWNLOADS_PATH, false)))
-		
 
 		if gin.Mode() == gin.DebugMode {
 			router.Use(cors.New(cors.Config{

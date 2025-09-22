@@ -12,7 +12,7 @@ import (
 // @Security ApiKey
 // @Tags user
 // @Produce json
-// @Success 200 {object} response.Response\
+// @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /user [get]
 func GetUser(c *gin.Context) {
@@ -36,7 +36,7 @@ func GetUser(c *gin.Context) {
 // @Security ApiKey
 // @Tags user
 // @Produce json
-// @Success 200 {object} response.Response\
+// @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /user/users [get]
 func GetUsers(c *gin.Context) {
@@ -97,7 +97,8 @@ func PostUser(c *gin.Context) {
 // @Security ApiKey
 // @Tags user
 // @Produce json
-// @Success 200 {object} response.Response\
+// @Param uid path string true "User Uid"
+// @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /user/{uid} [delete]
 func DeleteUser(c *gin.Context) {
@@ -119,7 +120,7 @@ func DeleteUser(c *gin.Context) {
 // @Tags user
 // @Param body body userInfo false "user struct"
 // @Produce json
-// @Success 200 {object} response.Response\
+// @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /user [put]
 func PutUser(c *gin.Context) {

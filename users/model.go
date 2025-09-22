@@ -2,6 +2,7 @@ package users
 
 import (
 	"site_backend/db"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -61,9 +62,10 @@ func (user *Users) userInsert() bool {
 
 func userDel(uid string) bool {
 	db := db.GetDB()
-	err := db.Exec("DELETE FROM users WHERE uid = ?", uid).Error
-	if err != nil {
-		log.Error("user Delet: ", err.Error)
+	db = db.Table("users").Where("uid = ?", uid).
+		Updates(map[string]interface{}{"update_at": time.Now(), "is_delete": 0})
+	if db.Error != nil {
+		log.Error("user Delet: ", db.Error, " User Id", uid)
 		return false
 	}
 	return true
@@ -120,3 +122,4 @@ func (perm *permissions) perms(role int) bool {
 	}
 	return true
 }
+

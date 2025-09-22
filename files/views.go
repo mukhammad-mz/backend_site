@@ -30,7 +30,7 @@ func GetListMusic(c *gin.Context) {
 		id = maxID.ID
 		id++
 	}
-	
+
 	if err := result.selectFile(id); !err {
 		c.JSON(http.StatusInternalServerError, response.ServerError())
 		return
@@ -135,12 +135,13 @@ func PutFile(c *gin.Context) {
 // @Security ApiKey
 // @Tags files
 // @Produce json
+// @Param id path integer true "Musics Id"
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /file/{idFile} [delete]
+// @Router /file/{id} [delete]
 func DeleteFile(c *gin.Context) {
 	defer authorization.Recoverd(c, "DeleteFile: ")
-	id, _ := st.Atoi(c.Param("idFile"))
+	id, _ := st.Atoi(c.Param("id"))
 	fileInfo := Musics{}
 	ext := fileInfo.File(id)
 	if !ext {

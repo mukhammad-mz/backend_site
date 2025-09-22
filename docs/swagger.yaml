@@ -133,8 +133,14 @@ paths:
       - ApiKey: []
       tags:
       - files
-  /file/{idFile}:
+  /file/{id}:
     delete:
+      parameters:
+      - description: Musics Id
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -233,6 +239,12 @@ paths:
       - user
   /user/{uid}:
     delete:
+      parameters:
+      - description: User Uid
+        in: path
+        name: uid
+        required: true
+        type: string
       produces:
       - application/json
       responses:
