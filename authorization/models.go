@@ -14,9 +14,9 @@ func getUserToken(user *UserLogin) (*UserToken, error) {
 	result := &UserToken{}
 	getDB := db.GetDB()
 	getDB = getDB.Table("users").
-		Where("login = ? and password = ?",
-			user.Login, helper.GenerateMd5(user.Password)).
-		Update("token = ?", helper.GenerateToken()).
+		Where("login = ? and password = ? and is_delete = ?",
+			user.Login, helper.GenerateMd5(user.Password), 1).
+		//Update("token", helper.GenerateToken()).
 		Scan(&result)
 
 	if getDB.Error != nil {
